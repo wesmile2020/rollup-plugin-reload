@@ -42,6 +42,18 @@ function closeServerOnTermination(server) {
     });
 }
 
+function getBannerScript(scriptSrc) {
+    return (
+`(function (){
+    if (document.getElementById('reload-script')) return;
+    const script = document.createElement('script');
+    script.id = 'reload-script';
+    script.src = '//' + (window.location.host || 'localhost').split(':')[0] + ${scriptSrc};
+    document.head.appendChild(script);
+}());`
+    );
+}
+
 function reload(options = {}) {
     const host = IP.findIp();
     const opts = { ...defaultOptions, ...options };
@@ -88,15 +100,7 @@ function reload(options = {}) {
         name: 'rollup-plugin-reload',
 
         banner() {
-            return `
-                (function (){
-                    if (document.getElementById('reload-script')) return;
-                    const script = document.createElement('script');
-                    script.id = 'reload-script';
-                    script.src = '//' + (window.location.host || 'localhost').split(':')[0] + ${scriptSrc};
-                    document.head.appendChild(script);
-                }());
-            `;
+            return getBannerScript(scriptSrc);
         },
 
         generateBundle() {
@@ -105,5 +109,7 @@ function reload(options = {}) {
         },
     };
 }
+
+console.log(reload().banner());
 
 module.exports = reload;
