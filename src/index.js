@@ -7,7 +7,7 @@ const mime = require('mime');
 const IP = require('./ip');
 
 function green(...rest) {
-    return chalk.default.bold.green(...rest);
+    return chalk.bold.green(...rest);
 }
 
 const defaultOptions = {
@@ -68,8 +68,8 @@ function reload(options = {}) {
                     \n\n(rollup-plugin-reload)`, 'utf-8');
                 return;
             }
-            res.writeHead(200);
             res.setHeader('Content-Type', mime.getType(filePath));
+            res.writeHead(200);
             res.end(content, 'utf-8');
         });
     }).listen(opts.port);
@@ -85,16 +85,17 @@ function reload(options = {}) {
     closeServerOnTermination(server);
 
     return {
-        name: '@rollup/plugin-reload',
+        name: 'rollup-plugin-reload',
 
         banner() {
             return `
                 (function (){
                     if (document.getElementById('reload-script')) return;
                     const script = document.createElement('script');
+                    script.id = 'reload-script';
                     script.src = '//' + (window.location.host || 'localhost').split(':')[0] + ${scriptSrc};
                     document.head.appendChild(script);
-                })()
+                }());
             `;
         },
 

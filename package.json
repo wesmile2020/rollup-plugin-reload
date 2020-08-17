@@ -1,10 +1,10 @@
 {
   "name": "rollup-plugin-reload",
-  "version": "1.3.0",
+  "version": "2.3.0",
   "description": "a rollup plugin for server and reload",
   "main": "src/index.js",
   "types": "typings/index.d.ts",
-  "homepage": "https://github.com/wesmile2020/-rollup-plugin-reload",
+  "homepage": "https://github.com/wesmile2020/rollup-plugin-reload",
   "scripts": {},
   "keywords": [
     "rollup-plugin",
