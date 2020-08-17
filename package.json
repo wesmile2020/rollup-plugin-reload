@@ -1,0 +1,22 @@
+{
+  "name": "rollup-plugin-reload",
+  "version": "1.2.0",
+  "description": "a rollup plugin for server and reload",
+  "main": "src/index.js",
+  "types": "typings/index.d.ts",
+  "homepage": "https://github.com/wesmile2020/-rollup-plugin-reload",
+  "scripts": {},
+  "keywords": [
+    "rollup-plugin",
+    "rollup-reload",
+    "rollup-server"
+  ],
+  "author": "lei.li",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "livereload": "^0.9.1",
+    "mime": "^2.4.6",
+    "reload": "^3.1.0"
+  }
+}
