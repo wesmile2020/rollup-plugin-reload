@@ -110,6 +110,4 @@ function reload(options = {}) {
     };
 }
 
-console.log(reload().banner());
-
 module.exports = reload;
