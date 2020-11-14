@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-reload",
-  "version": "2.7.0",
+  "version": "2.9.0",
   "description": "a rollup plugin for server and reload",
   "main": "src/index.js",
   "types": "typings/index.d.ts",
@@ -22,6 +22,7 @@
   "dependencies": {
     "chalk": "^4.1.0",
     "livereload": "^0.9.1",
-    "mime": "^2.4.6"
+    "mime": "^2.4.6",
+    "portfinder": "^1.0.28"
   }
 }

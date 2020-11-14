@@ -4,10 +4,15 @@ const http = require('http');
 const path = require('path');
 const chalk = require('chalk');
 const mime = require('mime');
+const protfinder = require('portfinder');
 const IP = require('./ip');
 
 function green(...rest) {
     return chalk.bold.green(...rest);
+}
+
+function red(...rest) {
+    return chalk.bold.red(...rest);
 }
 
 const defaultOptions = {
@@ -54,14 +59,16 @@ function getBannerScript(scriptSrc) {
     );
 }
 
-function reload(options = {}) {
+async function reload(options = {}) {
     const host = IP.findIp();
     const opts = { ...defaultOptions, ...options };
     if (!path.isAbsolute(opts.contentBase)) {
         opts.contentBase = path.resolve(process.cwd(), opts.contentBase);
     } 
 
+
     // http server
+    const serverPort = await protfinder.getPortPromise({ port: opts.port });
     http.createServer((req, res) => {
         const urlPath = decodeURI(req.url.split('?')[0]);
         readFile(opts.contentBase, urlPath, (error, { content, filePath }) => {
@@ -84,12 +91,16 @@ function reload(options = {}) {
             res.writeHead(200);
             res.end(content, 'utf-8');
         });
-    }).listen(opts.port);
+    }).listen(serverPort).on('error', () => {
+        console.log(red(`rollup-plugin-reloader: create server failed`));
+        process.exit(0);
+    });
 
     // reload
+    const reloadPort = await protfinder.getPortPromise({ port: opts.port + 1 });
     const scriptSrc = `':${opts.port + 1}/livereload.js?snipver=1'`;
     const server = livereload.createServer({
-        port: opts.port + 1,
+        port: reloadPort,
     });
 
     server.watch(opts.contentBase);
