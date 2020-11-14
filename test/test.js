@@ -1,3 +1,6 @@
 const reload = require('../src/index');
 
-reload();
+const plugin = reload();
+
+console.log(plugin.banner());
+plugin.generateBundle();

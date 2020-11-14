@@ -96,21 +96,20 @@ function reload(options = {}) {
                 res.writeHead(200);
                 res.end(content, 'utf-8');
             });
-        }).listen(serverPort).on('error', () => {
-            console.log(red('rollup-plugin-reload: create server failed'));
+        }).listen(serverPort).on('error', (err) => {
+            console.log(red('rollup-plugin-reload: create server failed', err.message));
             process.exit(0);
         });
 
         // reload
-        const scriptSrc = `':${opts.port + 1}/livereload.js?snipver=1'`;
         const server = livereload.createServer({
             port: reloadPort,
         });
 
         server.watch(opts.contentBase);
 
-        server.on('error', () => {
-            console.log(red('rollup-plugin-reload: create watch server failed'));
+        server.on('error', (err) => {
+            console.log(red('rollup-plugin-reload: create watch server failed', err.message));
             process.exit(1);
         });
 
@@ -123,7 +122,9 @@ function reload(options = {}) {
     return {
         name: 'rollup-plugin-reload',
 
-        banner() {
+        async banner() {
+            const port = await reloadPortPromise;
+            const scriptSrc = `':${port}/livereload.js?snipver=1'`;
             return getBannerScript(scriptSrc);
         },
 
