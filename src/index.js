@@ -92,7 +92,7 @@ async function reload(options = {}) {
             res.end(content, 'utf-8');
         });
     }).listen(serverPort).on('error', () => {
-        console.log(red(`rollup-plugin-reloader: create server failed`));
+        console.log(red('rollup-plugin-reload: create server failed'));
         process.exit(0);
     });
 
@@ -104,6 +104,11 @@ async function reload(options = {}) {
     });
 
     server.watch(opts.contentBase);
+
+    server.on('error', () => {
+        console.log(red('rollup-plugin-reload: create watch server failed'));
+        process.exit(1);
+    });
 
     closeServerOnTermination(server);
 
