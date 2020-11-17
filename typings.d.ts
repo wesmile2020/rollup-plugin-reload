@@ -5,4 +5,7 @@ interface Options {
     port?: number;
 }
 
-export default function reload(opts: Options): Plugin;
+function reload(opts: Options): Plugin;
+
+export default reload;
+export { reload };
