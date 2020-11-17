@@ -1,11 +1,12 @@
 {
   "name": "rollup-plugin-reload",
-  "version": "3.5.0",
+  "version": "3.6.0",
   "description": "a rollup plugin for server and reload",
   "main": "dist/index.js",
   "types": "typings.d.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "publish": "npm run build && npm publish"
   },
   "repository": {
     "type": "git",
