@@ -10,10 +10,10 @@ type FileCallback = (error: Error | null, result: FileResult) => void;
 
 export function readFile(contentBase: string, urlPath: string, cb: FileCallback) {
     let filePath = urlPath;
-    if (filePath.startsWith(path.sep)) {
+    if (/^\//.test(filePath)) {
         filePath = '.' + filePath;
     }
-    if (filePath.endsWith(path.sep)) {
+    if (/\/$/.test(filePath)) {
         filePath += 'index.html';
     }
     filePath = path.resolve(contentBase, filePath);
