@@ -10,13 +10,13 @@ type FileCallback = (error: Error | null, result: FileResult) => void;
 
 export function readFile(contentBase: string, urlPath: string, cb: FileCallback) {
     let filePath = urlPath;
-    if (/^\//.test(urlPath)) {
+    if (filePath.startsWith(path.sep)) {
         filePath = '.' + filePath;
     }
-    filePath = path.resolve(contentBase, filePath);
-    if (/\/$/.test(filePath)) {
+    if (filePath.endsWith(path.sep)) {
         filePath += 'index.html';
     }
+    filePath = path.resolve(contentBase, filePath);
     if (!fs.existsSync(filePath)) {
         cb(null, { content: null, filePath });
         return;
