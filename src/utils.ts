@@ -14,6 +14,9 @@ export function readFile(contentBase: string, urlPath: string, cb: FileCallback)
         filePath = '.' + filePath;
     }
     filePath = path.resolve(contentBase, filePath);
+    if (/\/$/.test(filePath)) {
+        filePath += 'index.html';
+    }
     if (!fs.existsSync(filePath)) {
         cb(null, { content: null, filePath });
         return;
