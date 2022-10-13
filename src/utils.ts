@@ -25,7 +25,7 @@ export function readFile(contentBase: string, urlPath: string, cb: FileCallback)
         const content = fs.readFileSync(filePath);
         cb(null, { content, filePath });
     } catch (error) {
-        cb(error, { content: null, filePath });
+        cb(error as Error, { content: null, filePath });
     }
     
 }

@@ -20,7 +20,7 @@ const defaultOptions = {
     port: 3000,
 };
 
-function reload(options?: {}): rollup.Plugin {
+function reload(options?: Options): rollup.Plugin {
     const opts = { ...defaultOptions, ...options };
     const host = findIp();
     if (!path.isAbsolute(opts.contentBase)) {
@@ -87,7 +87,7 @@ function reload(options?: {}): rollup.Plugin {
             return getBannerScript(scriptSrc);
         },
     
-        async generateBundle() {
+        async buildEnd() {
             const port = await serverPortPromise;
             const url = `http://${host}:${port}`;
             logSuccess(url), '->', path.resolve(opts.contentBase);
