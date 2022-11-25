@@ -2,21 +2,23 @@ import path from 'path';
 import portfinder from 'portfinder';
 import rollup from 'rollup';
 import { findIp } from './ip';
-import { Server } from './Server';
+import { Server, ProxyConfig } from './Server';
 import fs from 'fs';
 import chalk from 'chalk';
 
 interface Options {
-  contentBase?: string;
-  port?: number;
+  contentBase: string;
+  port: number;
+  proxy: ProxyConfig;
 }
 
-const defaultOptions = {
+const defaultOptions: Options = {
   contentBase: '',
   port: 3000,
+  proxy: {},
 };
 
-function reload(options?: Options): rollup.Plugin {
+function reload(options?: Partial<Options>): rollup.Plugin {
   const opts = { ...defaultOptions, ...options };
   const host = findIp();
   let root = opts.contentBase;
@@ -27,7 +29,7 @@ function reload(options?: Options): rollup.Plugin {
   const server = new Server();
 
   portPromise.then((port) => {
-    server.start({ port, root });
+    server.start({ port, root, proxy: opts.proxy });
   });
 
   process.on('SIGINT', () => {

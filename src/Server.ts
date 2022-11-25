@@ -2,10 +2,16 @@ import express from 'express';
 import http from 'http';
 import { WebSocketServer, WebSocket } from 'ws';
 import chokidar from 'chokidar';
+import { createProxyMiddleware, Options } from 'http-proxy-middleware';
+
+export type ProxyConfig = {
+  [key in string]: Options;
+}
 
 interface ServerConfig {
   port: number;
   root: string;
+  proxy?: ProxyConfig;
 }
 
 type Listen = (port: number, cb: (e?: Error) => void) => http.Server;
@@ -40,9 +46,19 @@ class Server {
     this.broadcast('reload');
   }
 
+  private _registerProxy(config: ServerConfig) {
+    const { proxy } = config;
+    if (!proxy) return;
+    for (const key in proxy) {
+      const middleware = createProxyMiddleware(proxy[key]);
+      this._app.use(key, middleware);
+    }
+  }
+
   async start(config: ServerConfig) {
     const watcher = chokidar.watch(config.root);
     watcher.on('all', this._handleChange);
+    this._registerProxy(config);
 
     return new Promise((resolve, reject) => {
       this._app.use(express.static(config.root));
