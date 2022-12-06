@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-reload",
-  "version": "4.0.2",
+  "version": "4.0.3",
   "description": "a rollup plugin for server and reload",
   "main": "dist/index.js",
   "files": [

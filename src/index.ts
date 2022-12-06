@@ -10,6 +10,10 @@ interface Options {
   contentBase: string;
   port: number;
   proxy: ProxyConfig;
+  https?: {
+    key: string;
+    cert: string;
+  }
 }
 
 const defaultOptions: Options = {
@@ -29,7 +33,12 @@ function reload(options?: Partial<Options>): rollup.Plugin {
   const server = new Server();
 
   portPromise.then((port) => {
-    server.start({ port, root, proxy: opts.proxy });
+    server.start({
+      port,
+      root,
+      proxy: opts.proxy,
+      https: opts.https,
+    });
   });
 
   process.on('SIGINT', () => {
@@ -41,6 +50,8 @@ function reload(options?: Partial<Options>): rollup.Plugin {
     process.exit();
   });
 
+  const protocol = opts.https ? 'https' : 'http';
+
   return {
     name: 'rollup-plugin-reload',
 
@@ -50,9 +61,9 @@ function reload(options?: Partial<Options>): rollup.Plugin {
 
     async buildEnd() {
       const port = await portPromise;
-      const url = `http://${host}:${port}`;
+      const url = `${protocol}://${host}:${port}`;
       console.log('Your application running on: \n');
-      console.log('   local:', chalk.bold.blue(`http://localhost:${port}`));
+      console.log('   local:', chalk.bold.blue(`${protocol}://localhost:${port}`));
       console.log(' network:', chalk.bold.blue(url));
     },
   };

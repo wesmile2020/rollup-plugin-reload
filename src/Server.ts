@@ -1,5 +1,7 @@
 import express from 'express';
 import http from 'http';
+import https from 'https';
+import fs from 'fs';
 import { WebSocketServer, WebSocket } from 'ws';
 import chokidar from 'chokidar';
 import { createProxyMiddleware, Options } from 'http-proxy-middleware';
@@ -12,13 +14,17 @@ interface ServerConfig {
   port: number;
   root: string;
   proxy?: ProxyConfig;
+  https?: {
+    key: string;
+    cert: string;
+  }
 }
 
 type Listen = (port: number, cb: (e?: Error) => void) => http.Server;
 
 class Server {
   private _app: express.Application = express();
-  private _server?: http.Server;
+  private _server?: http.Server | https.Server;
   private _connections: WebSocket[] = [];
 
   constructor() {
@@ -62,7 +68,15 @@ class Server {
 
     return new Promise((resolve, reject) => {
       this._app.use(express.static(config.root));
-      this._server = (this._app.listen as unknown as Listen)(config.port, (err) => {
+
+      if (config.https) {
+        const key = fs.readFileSync(config.https.key, 'utf-8');
+        const cert = fs.readFileSync(config.https.cert, 'utf-8');
+        this._server = https.createServer({ key, cert }, this._app);
+      } else {
+        this._server = http.createServer(this._app);
+      }
+      (this._server.listen as Listen)(config.port, (err) => {
         if (err) {
           reject(err);
         } else {
